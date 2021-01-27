@@ -120,3 +120,6 @@
 .notion-frame {
   min-height: 100vh;
 }
+.lazy-image-wrapper img {
+  max-height: unset;
+}
