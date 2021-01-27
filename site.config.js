@@ -6,7 +6,7 @@ module.exports = {
   name: 'Edufair Online 2021',
   domain: 'edufair-blog.vercel.app',
   author: 'Wisesa',
-  mainWeb: 'http://edufair-online-concept.wisesa.dev/',
+  mainWeb: 'https://edufaironline.id/',
 
   // open graph metadata (optional)
   description: 'Edufair Online 2021 Blog',
