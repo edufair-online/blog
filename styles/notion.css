@@ -121,5 +121,5 @@
   min-height: 100vh;
 }
 .lazy-image-wrapper img {
-  max-height: unset;
+  max-height: unset!important;
 }
