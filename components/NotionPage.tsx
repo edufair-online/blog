@@ -36,7 +36,12 @@ const Modal = dynamic(
   () => import('react-notion-x').then((notion) => notion.Modal),
   { ssr: false }
 )
-
+const Tweet = dynamic(
+  () => import('react-notion-x').then((notion) => notion.Tweet),
+  {
+    ssr: false
+  }
+)
 export const NotionPage: React.FC<types.PageProps> = ({
   site,
   recordMap,
@@ -195,8 +200,8 @@ export const NotionPage: React.FC<types.PageProps> = ({
           code: Code,
           collection: Collection,
           collectionRow: CollectionRow,
-
-          modal: Modal
+          modal: Modal,
+          tweet: Tweet
         }}
         recordMap={recordMap}
         rootPageId={site.rootNotionPageId}
