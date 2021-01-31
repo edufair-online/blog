@@ -14,6 +14,17 @@ import 'rc-dropdown/assets/index.css'
 // used for rendering equations (optional)
 // import 'katex/dist/katex.min.css'
 
+// here we're bringing in any languages we want to support for
+// syntax highlighting via Notion's Code block
+import 'prismjs'
+import 'prismjs/components/prism-markup'
+import 'prismjs/components/prism-javascript'
+import 'prismjs/components/prism-typescript'
+import 'prismjs/components/prism-bash'
+
+// global style overrides for prism theme
+import 'styles/prism-theme.css'
+
 // global style overrides for notion
 import 'styles/notion.css'
 
@@ -23,10 +34,6 @@ import React from 'react'
 import Router from 'next/router'
 import NProgress from 'nprogress'
 import { ChakraProvider } from '@chakra-ui/react'
-import { useRouter } from 'next/router'
-import { bootstrap } from 'lib/bootstrap-client'
-import { fathomId, fathomConfig } from 'lib/config'
-import * as Fathom from 'fathom-client'
 
 import theme from '../theme'
 
@@ -35,29 +42,7 @@ Router.events.on('routeChangeStart', () => NProgress.start())
 Router.events.on('routeChangeComplete', () => NProgress.done())
 Router.events.on('routeChangeError', () => NProgress.done())
 
-if (typeof window !== 'undefined') {
-  bootstrap()
-}
-
 export default function App({ Component, pageProps }) {
-  const router = useRouter()
-
-  React.useEffect(() => {
-    if (fathomId) {
-      Fathom.load(fathomId, fathomConfig)
-
-      function onRouteChangeComplete() {
-        Fathom.trackPageview()
-      }
-
-      router.events.on('routeChangeComplete', onRouteChangeComplete)
-
-      return () => {
-        router.events.off('routeChangeComplete', onRouteChangeComplete)
-      }
-    }
-  }, [])
-
   return (
     <ChakraProvider theme={theme}>
       <Component {...pageProps} />

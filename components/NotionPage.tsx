@@ -3,12 +3,13 @@ import Head from 'next/head'
 import Link from 'next/link'
 import cs from 'classnames'
 import { useRouter } from 'next/router'
-import { useLocalStorage, useSearchParam } from 'react-use'
+import { useSearchParam } from 'react-use'
 import { IconContext } from 'react-icons'
 import BodyClassName from 'react-body-classname'
+import dynamic from 'next/dynamic'
 
 // core notion renderer
-import { NotionRenderer } from 'react-notion-x'
+import { NotionRenderer, Code, Collection, CollectionRow } from 'react-notion-x'
 
 // utils
 import { getBlockTitle } from 'notion-utils'
@@ -30,6 +31,11 @@ import { ReactUtterances } from './ReactUtterances'
 
 import styles from './styles.module.css'
 import { useColorMode } from '@chakra-ui/react'
+
+const Modal = dynamic(
+  () => import('react-notion-x').then((notion) => notion.Modal),
+  { ssr: false }
+)
 
 export const NotionPage: React.FC<types.PageProps> = ({
   site,
@@ -185,7 +191,12 @@ export const NotionPage: React.FC<types.PageProps> = ({
             >
               <a {...props} />
             </Link>
-          )
+          ),
+          code: Code,
+          collection: Collection,
+          collectionRow: CollectionRow,
+
+          modal: Modal
         }}
         recordMap={recordMap}
         rootPageId={site.rootNotionPageId}
