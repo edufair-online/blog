@@ -14,6 +14,17 @@ import 'rc-dropdown/assets/index.css'
 // used for rendering equations (optional)
 // import 'katex/dist/katex.min.css'
 
+// here we're bringing in any languages we want to support for
+// syntax highlighting via Notion's Code block
+import 'prismjs'
+import 'prismjs/components/prism-markup'
+import 'prismjs/components/prism-javascript'
+import 'prismjs/components/prism-typescript'
+import 'prismjs/components/prism-bash'
+
+// global style overrides for prism theme
+import 'styles/prism-theme.css'
+
 // global style overrides for notion
 import 'styles/notion.css'
 
