@@ -33,7 +33,6 @@
     "chrome-aws-lambda": "^5.5.0",
     "classnames": "^2.2.6",
     "dangerously-set-html-content": "^1.0.8",
-    "fathom-client": "^3.0.0",
     "framer-motion": "^3.2.2-rc.1",
     "got": "^11.8.1",
     "isomorphic-unfetch": "^3.1.0",

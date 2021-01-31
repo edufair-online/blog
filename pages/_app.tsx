@@ -34,10 +34,6 @@ import React from 'react'
 import Router from 'next/router'
 import NProgress from 'nprogress'
 import { ChakraProvider } from '@chakra-ui/react'
-import { useRouter } from 'next/router'
-import { bootstrap } from 'lib/bootstrap-client'
-import { fathomId, fathomConfig } from 'lib/config'
-import * as Fathom from 'fathom-client'
 
 import theme from '../theme'
 
@@ -46,29 +42,7 @@ Router.events.on('routeChangeStart', () => NProgress.start())
 Router.events.on('routeChangeComplete', () => NProgress.done())
 Router.events.on('routeChangeError', () => NProgress.done())
 
-if (typeof window !== 'undefined') {
-  bootstrap()
-}
-
 export default function App({ Component, pageProps }) {
-  const router = useRouter()
-
-  React.useEffect(() => {
-    if (fathomId) {
-      Fathom.load(fathomId, fathomConfig)
-
-      function onRouteChangeComplete() {
-        Fathom.trackPageview()
-      }
-
-      router.events.on('routeChangeComplete', onRouteChangeComplete)
-
-      return () => {
-        router.events.off('routeChangeComplete', onRouteChangeComplete)
-      }
-    }
-  }, [])
-
   return (
     <ChakraProvider theme={theme}>
       <Component {...pageProps} />

@@ -12,7 +12,7 @@ module.exports = {
   description: 'Edufair Online 2021 Blog',
   socialImageTitle: 'Edufair Online 2021',
   socialImageSubtitle: 'Edufair Online 2021 Blog',
-
+  googleAnalyticsId: 'G-EP3GWXJX5Z',
   // social usernames (optional)
   // twitter: 'transitive_bs',
   // github: 'transitive-bullshit',

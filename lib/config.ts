@@ -16,6 +16,7 @@ export const author: string = getSiteConfig('author')
 export const domain: string = getSiteConfig('domain')
 export const description: string = getSiteConfig('description', 'Notion Blog')
 export const mainWeb: string = getSiteConfig('mainWeb')
+export const googleAnalyticsId: string = getSiteConfig('googleAnalyticsId')
 
 // social accounts
 export const twitter: string | null = getSiteConfig('twitter', null)
@@ -80,14 +81,6 @@ export const api = {
 }
 
 // ----------------------------------------------------------------------------
-
-export const fathomId = isDev ? null : process.env.NEXT_PUBLIC_FATHOM_ID
-
-export const fathomConfig = fathomId
-  ? {
-      excludedDomains: ['localhost', 'localhost:3000']
-    }
-  : undefined
 
 const defaultEnvValueForPreviewImageSupport =
   isPreviewImageSupportEnabled && isServer ? undefined : null
