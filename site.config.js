@@ -1,6 +1,6 @@
 module.exports = {
   // where it all starts -- the site's root Notion page (required)
-  rootNotionPageId: 'ef70445f3daa48edb825df2d537fb517',
+  rootNotionPageId: 'e0fc1aef04ce4a9b914138233bd9e3a1',
 
   // basic site info (required)
   name: 'Edufair Online 2021',
