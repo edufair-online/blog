@@ -11,6 +11,8 @@ const pwaLoader = withPWA({
   pwa: {
     dest: 'public',
     sourcemap: false
+    // disable: process.env.NODE_ENV === 'development',
+    // register: true
   }
 })
 
