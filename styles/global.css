@@ -22,3 +22,9 @@ body {
 .utterances {
   max-width: 100% !important;
 }
+#disqus_thread {
+  width: 100% !important;
+}
+#disqus_thread > iframe {
+  width: 100% !important;
+}

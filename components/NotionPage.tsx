@@ -13,6 +13,7 @@ import { NotionRenderer, Code, Collection, CollectionRow } from 'react-notion-x'
 
 // utils
 import { getBlockTitle } from 'notion-utils'
+import { DiscussionEmbed } from 'disqus-react'
 import { mapPageUrl, getCanonicalPageUrl } from 'lib/map-page-url'
 import { mapNotionImageUrl } from 'lib/map-image-url'
 import { getPageDescription } from 'lib/get-page-description'
@@ -27,7 +28,6 @@ import { Loading } from './Loading'
 import { Page404 } from './Page404'
 import { PageHead } from './PageHead'
 import { Footer } from './Footer'
-import { DiscussionEmbed } from 'disqus-react'
 
 import styles from './styles.module.css'
 import { useColorMode } from '@chakra-ui/react'
@@ -110,7 +110,7 @@ export const NotionPage: React.FC<types.PageProps> = ({
         <DiscussionEmbed
           shortname={config.disqusShortName}
           config={{
-            url: `${config.domain}/${canonicalPageUrl}`,
+            url: canonicalPageUrl || `https://${config.domain}/${pageId}`,
             identifier: pageId,
             title
           }}
