@@ -4,10 +4,10 @@ module.exports = {
 
   // basic site info (required)
   name: 'Edufair Online 2021',
-  domain: 'edufair-blog.vercel.app',
+  domain: 'blog.edufaironline.id',
   author: 'Wisesa',
   mainWeb: 'https://edufaironline.id/',
-
+  disqusShortName: 'edufair-blog',
   // open graph metadata (optional)
   description: 'Edufair Online 2021 Blog',
   socialImageTitle: 'Edufair Online 2021',
