@@ -26,7 +26,7 @@
     "posttest": "run-s build"
   },
   "dependencies": {
-    "@chakra-ui/react": "^1.1.5",
+    "@chakra-ui/react": "^1.2.1",
     "@emotion/react": "^11.1.4",
     "@emotion/styled": "^11.0.0",
     "@google-cloud/firestore": "^4.8.1",
@@ -34,7 +34,7 @@
     "classnames": "^2.2.6",
     "dangerously-set-html-content": "^1.0.8",
     "disqus-react": "^1.0.11",
-    "framer-motion": "^3.2.2-rc.1",
+    "framer-motion": "^3.3.0",
     "got": "^11.8.1",
     "isomorphic-unfetch": "^3.1.0",
     "lqip-modern": "^1.1.3",

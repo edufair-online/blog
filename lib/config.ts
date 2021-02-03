@@ -23,6 +23,7 @@ export const disqusShortName: string = getSiteConfig('disqusShortName')
 export const twitter: string | null = getSiteConfig('twitter', null)
 export const github: string | null = getSiteConfig('github', null)
 export const linkedin: string | null = getSiteConfig('linkedin', null)
+export const socialMedia: any | null = getSiteConfig('socialMedia', {})
 
 export const socialImageTitle: string | null = getSiteConfig(
   'socialImageTitle',

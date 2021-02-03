@@ -18,6 +18,11 @@ module.exports = {
   // github: 'transitive-bullshit',
   // linkedin: 'fisch2',
 
+  socialMedia: {
+    instagram: 'https://www.instagram.com/edufair_online/',
+    discord: 'https://s.id/edu-discord',
+    youtube: 'https://www.youtube.com/channel/UCt0rriFZO-ZPy802fEKxE7Q'
+  },
   // default notion icon and cover images for site-wide consistency (optional)
   // page-specific values will override these site-wide defaults
   defaultPageIcon: null, // URL
