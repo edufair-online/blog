@@ -26,6 +26,7 @@ export const PromptPWA: React.FC<{ delay: number }> = ({ delay }) => {
   if (!supportsPWA) {
     return null
   } else {
+    toast.closeAll()
     toast({
       position: 'bottom-left',
       duration: 10000,
