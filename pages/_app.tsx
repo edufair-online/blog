@@ -36,7 +36,6 @@ import NProgress from 'nprogress'
 import { ChakraProvider } from '@chakra-ui/react'
 
 import theme from '../theme'
-import PromptPWA from 'components/PromptPWA'
 
 NProgress.configure({ showSpinner: false })
 Router.events.on('routeChangeStart', () => NProgress.start())
@@ -47,7 +46,6 @@ export default function App({ Component, pageProps }) {
   return (
     <ChakraProvider theme={theme}>
       <Component {...pageProps} />
-      <PromptPWA delay={5000} />
     </ChakraProvider>
   )
 }
