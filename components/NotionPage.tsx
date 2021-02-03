@@ -27,7 +27,7 @@ import { Loading } from './Loading'
 import { Page404 } from './Page404'
 import { PageHead } from './PageHead'
 import { Footer } from './Footer'
-import { ReactUtterances } from './ReactUtterances'
+import { DiscussionEmbed } from 'disqus-react'
 
 import styles from './styles.module.css'
 import { useColorMode } from '@chakra-ui/react'
@@ -95,7 +95,7 @@ export const NotionPage: React.FC<types.PageProps> = ({
 
   const isBlogPost =
     block.type === 'page' && block.parent_table === 'collection'
-  const showTableOfContents = !!isBlogPost
+  // const showTableOfContents = !!isBlogPost
   const minTableOfContentsItems = 3
 
   const socialImage = config.api.renderSocialImage(pageId)
@@ -104,14 +104,16 @@ export const NotionPage: React.FC<types.PageProps> = ({
   let comments: React.ReactNode = null
 
   // only display comments on blog post pages
-  if (isBlogPost) {
-    if (config.utterancesGitHubRepo) {
+  if (isBlogPost && !config.isDev) {
+    if (config.disqusShortName) {
       comments = (
-        <ReactUtterances
-          repo={config.utterancesGitHubRepo}
-          issueMap='issue-term'
-          issueTerm='title'
-          theme='preferred-color-scheme'
+        <DiscussionEmbed
+          shortname={config.disqusShortName}
+          config={{
+            url: `${config.domain}/${canonicalPageUrl}`,
+            identifier: canonicalPageUrl,
+            title
+          }}
         />
       )
     }

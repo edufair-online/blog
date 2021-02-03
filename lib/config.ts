@@ -17,6 +17,7 @@ export const domain: string = getSiteConfig('domain')
 export const description: string = getSiteConfig('description', 'Notion Blog')
 export const mainWeb: string = getSiteConfig('mainWeb')
 export const googleAnalyticsId: string = getSiteConfig('googleAnalyticsId')
+export const disqusShortName: string = getSiteConfig('disqusShortName')
 
 // social accounts
 export const twitter: string | null = getSiteConfig('twitter', null)
