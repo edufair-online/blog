@@ -13,7 +13,10 @@ export const PromptPWA: React.FC<{ delay: number }> = ({ delay }) => {
       setPromptInstall(e)
     }
     window.addEventListener('beforeinstallprompt', handler)
-    return () => window.removeEventListener('transitionend', handler)
+    return () => {
+      window.removeEventListener('transitionend', handler)
+      toast.closeAll()
+    }
   }, [delay])
 
   const handleInstall = (evt) => {
