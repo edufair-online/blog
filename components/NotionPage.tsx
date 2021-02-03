@@ -104,14 +104,14 @@ export const NotionPage: React.FC<types.PageProps> = ({
   let comments: React.ReactNode = null
 
   // only display comments on blog post pages
-  if (isBlogPost && !config.isDev) {
+  if (isBlogPost) {
     if (config.disqusShortName) {
       comments = (
         <DiscussionEmbed
           shortname={config.disqusShortName}
           config={{
             url: `${config.domain}/${canonicalPageUrl}`,
-            identifier: canonicalPageUrl,
+            identifier: pageId,
             title
           }}
         />
