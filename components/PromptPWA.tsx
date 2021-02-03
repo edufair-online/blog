@@ -28,7 +28,7 @@ export const PromptPWA: React.FC<{ delay: number }> = ({ delay }) => {
   } else {
     toast({
       position: 'bottom-left',
-      duration: 90000,
+      duration: 10000,
       isClosable: true,
       render: () => (
         <Box color='white' p={3} bg='blue.500' borderRadius={2}>
