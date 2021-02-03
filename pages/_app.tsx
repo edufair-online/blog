@@ -36,6 +36,7 @@ import NProgress from 'nprogress'
 import { ChakraProvider } from '@chakra-ui/react'
 
 import theme from '../theme'
+import Head from 'next/head'
 
 NProgress.configure({ showSpinner: false })
 Router.events.on('routeChangeStart', () => NProgress.start())
@@ -44,8 +45,16 @@ Router.events.on('routeChangeError', () => NProgress.done())
 
 export default function App({ Component, pageProps }) {
   return (
-    <ChakraProvider theme={theme}>
-      <Component {...pageProps} />
-    </ChakraProvider>
+    <>
+      <Head>
+        <meta
+          name='viewport'
+          content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+        />
+      </Head>
+      <ChakraProvider theme={theme}>
+        <Component {...pageProps} />
+      </ChakraProvider>
+    </>
   )
 }
