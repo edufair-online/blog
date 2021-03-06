@@ -19,7 +19,6 @@ import { DiscussionEmbed } from 'disqus-react'
 import { mapPageUrl, getCanonicalPageUrl } from 'lib/map-page-url'
 import { mapNotionImageUrl } from 'lib/map-image-url'
 import { getPageDescription } from 'lib/get-page-description'
-import { getPageTweet } from 'lib/get-page-tweet'
 import { searchNotion } from 'lib/search-notion'
 import * as types from 'lib/types'
 import * as config from 'lib/config'
@@ -31,7 +30,6 @@ import { Loading } from './Loading'
 import { Page404 } from './Page404'
 import { PageHead } from './PageHead'
 import { Footer } from './Footer'
-import { GitHubShareButton } from './GitHubShareButton'
 
 import styles from './styles.module.css'
 import { useColorMode } from '@chakra-ui/react'
@@ -264,8 +262,6 @@ export const NotionPage: React.FC<types.PageProps> = ({
         pageFooter={comments}
         footer={<Footer pageId={pageId} />}
       />
-
-      <GitHubShareButton />
 
       <CustomHtml site={site} />
     </Twitter.Provider>
