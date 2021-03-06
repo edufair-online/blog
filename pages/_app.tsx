@@ -5,7 +5,7 @@ import 'styles/global.css'
 import 'react-notion-x/src/styles.css'
 
 // used for code syntax highlighting (optional)
-import 'prismjs/themes/prism-tomorrow.css'
+import 'prismjs/themes/prism-coy.css'
 
 // used for collection views (optional)
 // TODO: re-add if we enable collection view dropdowns
@@ -13,6 +13,15 @@ import 'rc-dropdown/assets/index.css'
 
 // used for rendering equations (optional)
 // import 'katex/dist/katex.min.css'
+
+// core styles for static tweet renderer (optional)
+import 'react-static-tweets/styles.css'
+
+// global style overrides for notion
+import 'styles/notion.css'
+
+// global style overrides for prism theme (optional)
+import 'styles/prism-theme.css'
 
 // here we're bringing in any languages we want to support for
 // syntax highlighting via Notion's Code block
@@ -25,9 +34,6 @@ import 'prismjs/components/prism-bash'
 // global style overrides for prism theme
 import 'styles/prism-theme.css'
 
-// global style overrides for notion
-import 'styles/notion.css'
-
 import 'nprogress/nprogress.css'
 
 import React from 'react'
@@ -37,6 +43,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 
 import theme from '../theme'
 import Head from 'next/head'
+import PromptPWA from 'components/PromptPWA'
 
 NProgress.configure({ showSpinner: false })
 Router.events.on('routeChangeStart', () => NProgress.start())
@@ -54,6 +61,7 @@ export default function App({ Component, pageProps }) {
       </Head>
       <ChakraProvider theme={theme}>
         <Component {...pageProps} />
+        <PromptPWA delay={5000} />
       </ChakraProvider>
     </>
   )

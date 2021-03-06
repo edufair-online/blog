@@ -17,6 +17,10 @@ const pwaLoader = withPWA({
 })
 
 // Next configuration
-const nextConfig = {}
+const nextConfig = {
+  images: {
+    domains: ['pbs.twimg.com']
+  }
+}
 
 module.exports = withPlugins([[withBundleAnalyzer], [pwaLoader], nextConfig])

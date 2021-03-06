@@ -7,7 +7,10 @@ import { isPreviewImageSupportEnabled } from '../lib/config'
 import * as types from '../lib/types'
 import * as db from '../lib/db'
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default async (
+  req: NextApiRequest,
+  res: NextApiResponse
+): Promise<void> => {
   if (req.method !== 'POST') {
     return res.status(405).send({ error: 'method not allowed' })
   }
@@ -35,7 +38,7 @@ export async function createPreviewImage(
   url: string,
   id: string
 ): Promise<types.PreviewImage> {
-  // console.log('createPreviewImage lambda', { url, id })
+  console.log('createPreviewImage lambda', { url, id })
   const doc = db.images.doc(id)
 
   try {
@@ -46,7 +49,7 @@ export async function createPreviewImage(
 
     const { body } = await got(url, { responseType: 'buffer' })
     const result = await lqip(body)
-    // console.log('lqip', result.metadata)
+    console.log('lqip', result.metadata)
 
     const image = {
       url,

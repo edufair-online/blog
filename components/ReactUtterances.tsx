@@ -37,6 +37,7 @@ export class ReactUtterances extends React.Component<
   ReactUtterancesState
 > {
   reference: React.RefObject<HTMLDivElement>
+  scriptElement: any
 
   constructor(props: ReactUtterancesProps) {
     super(props)
@@ -57,6 +58,18 @@ export class ReactUtterances extends React.Component<
     this.state = { pending: true }
   }
 
+  UNSAFE_componentWillReceiveProps(props) {
+    // this.scriptElement.setAttribute('theme', props.theme)
+    const iframe = document.querySelector('iframe.utterances-frame') as any
+
+    if (iframe) {
+      iframe.contentWindow.postMessage(
+        { type: 'set-theme', theme: props.theme },
+        'https://utteranc.es/'
+      )
+    }
+  }
+
   componentDidMount(): void {
     const { repo, issueMap, issueTerm, issueNumber, label, theme } = this.props
     const scriptElement = document.createElement('script')
@@ -73,15 +86,16 @@ export class ReactUtterances extends React.Component<
     }
 
     if (issueMap === 'issue-number') {
-      scriptElement.setAttribute('issue-number', issueNumber!.toString())
+      scriptElement.setAttribute('issue-number', issueNumber.toString())
     } else if (issueMap === 'issue-term') {
-      scriptElement.setAttribute('issue-term', issueTerm!)
+      scriptElement.setAttribute('issue-term', issueTerm)
     } else {
       scriptElement.setAttribute('issue-term', issueMap)
     }
 
     // TODO: Check current availability
-    this.reference.current!.appendChild(scriptElement)
+    this.scriptElement = scriptElement
+    this.reference.current.appendChild(scriptElement)
   }
 
   render(): React.ReactElement {

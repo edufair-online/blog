@@ -1,12 +1,14 @@
 import * as React from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import cs from 'classnames'
 import { useRouter } from 'next/router'
 import { useSearchParam } from 'react-use'
-import { IconContext } from 'react-icons'
 import BodyClassName from 'react-body-classname'
-import dynamic from 'next/dynamic'
+import { PageBlock } from 'notion-types'
+
+import { Tweet, Twitter } from 'react-static-tweets'
 
 // core notion renderer
 import { NotionRenderer, Code, Collection, CollectionRow } from 'react-notion-x'
@@ -17,6 +19,7 @@ import { DiscussionEmbed } from 'disqus-react'
 import { mapPageUrl, getCanonicalPageUrl } from 'lib/map-page-url'
 import { mapNotionImageUrl } from 'lib/map-image-url'
 import { getPageDescription } from 'lib/get-page-description'
+import { getPageTweet } from 'lib/get-page-tweet'
 import { searchNotion } from 'lib/search-notion'
 import * as types from 'lib/types'
 import * as config from 'lib/config'
@@ -28,20 +31,41 @@ import { Loading } from './Loading'
 import { Page404 } from './Page404'
 import { PageHead } from './PageHead'
 import { Footer } from './Footer'
+import { GitHubShareButton } from './GitHubShareButton'
 
 import styles from './styles.module.css'
 import { useColorMode } from '@chakra-ui/react'
+
+// const Code = dynamic(() =>
+//   import('react-notion-x').then((notion) => notion.Code)
+// )
+//
+// const Collection = dynamic(() =>
+//   import('react-notion-x').then((notion) => notion.Collection)
+// )
+//
+// const CollectionRow = dynamic(
+//   () => import('react-notion-x').then((notion) => notion.CollectionRow),
+//   {
+//     ssr: false
+//   }
+// )
+
+const Pdf = dynamic(() => import('react-notion-x').then((notion) => notion.Pdf))
+
+const Equation = dynamic(() =>
+  import('react-notion-x').then((notion) => notion.Equation)
+)
+
+// we're now using a much lighter-weight tweet renderer react-static-tweets
+// instead of the official iframe-based embed widget from twitter
+// const Tweet = dynamic(() => import('react-tweet-embed'))
 
 const Modal = dynamic(
   () => import('react-notion-x').then((notion) => notion.Modal),
   { ssr: false }
 )
-const Tweet = dynamic(
-  () => import('react-notion-x').then((notion) => notion.Tweet),
-  {
-    ssr: false
-  }
-)
+
 export const NotionPage: React.FC<types.PageProps> = ({
   site,
   recordMap,
@@ -49,17 +73,17 @@ export const NotionPage: React.FC<types.PageProps> = ({
   pageId
 }) => {
   const router = useRouter()
-
   const lite = useSearchParam('lite')
 
   const params: any = {}
   if (lite) params.lite = lite
 
+  // lite mode is for oembed
+  const isLiteMode = lite === 'true'
   const searchParams = new URLSearchParams(params)
 
-  const isLiteMode = lite === 'true'
   const { colorMode } = useColorMode()
-  const isDarkMode = colorMode === 'dark'
+  const darkMode = colorMode === 'dark'
 
   if (router.isFallback) {
     return <Loading />
@@ -83,9 +107,11 @@ export const NotionPage: React.FC<types.PageProps> = ({
   // })
 
   if (!config.isServer) {
-    // add important objects global window for easy debugging
-    ;(window as any).recordMap = recordMap
-    ;(window as any).block = block
+    // add important objects to the window global for easy debugging
+    const g = window as any
+    g.pageId = pageId
+    g.recordMap = recordMap
+    g.block = block
   }
 
   const siteMapPageUrl = mapPageUrl(site, recordMap, searchParams)
@@ -93,17 +119,25 @@ export const NotionPage: React.FC<types.PageProps> = ({
   const canonicalPageUrl =
     !config.isDev && getCanonicalPageUrl(site, recordMap)(pageId)
 
+  // const isRootPage =
+  //   parsePageId(block.id) === parsePageId(site.rootNotionPageId)
   const isBlogPost =
     block.type === 'page' && block.parent_table === 'collection'
-  // const showTableOfContents = !!isBlogPost
+  const showTableOfContents = !!isBlogPost
   const minTableOfContentsItems = 3
 
-  const socialImage = config.api.renderSocialImage(pageId)
+  const socialImage =
+    mapNotionImageUrl(
+      (block as PageBlock).format?.page_cover || config.defaultPageCover,
+      block
+    ) || config.api.renderSocialImage(pageId)
+
   const socialDescription =
     getPageDescription(block, recordMap) ?? config.description
+
   let comments: React.ReactNode = null
 
-  // only display comments on blog post pages
+  // only display comments and page actions on blog post pages
   if (isBlogPost) {
     if (config.disqusShortName) {
       comments = (
@@ -120,7 +154,15 @@ export const NotionPage: React.FC<types.PageProps> = ({
   }
 
   return (
-    <IconContext.Provider value={{ style: { verticalAlign: 'middle' } }}>
+    <Twitter.Provider
+      value={{
+        tweetAstMap: (recordMap as any).tweetAstMap || {},
+        swrOptions: {
+          fetcher: (id) =>
+            fetch(`/api/get-tweet-ast/${id}`).then((r) => r.json())
+        }
+      }}
+    >
       <PageHead site={site} />
 
       <Head>
@@ -160,9 +202,7 @@ export const NotionPage: React.FC<types.PageProps> = ({
           </>
         )}
 
-        <title>
-          {title} {pageId !== site.rootNotionPageId ? ' | ' + site.name : ''}
-        </title>
+        <title>{title}</title>
       </Head>
 
       <CustomFont site={site} />
@@ -202,16 +242,18 @@ export const NotionPage: React.FC<types.PageProps> = ({
           code: Code,
           collection: Collection,
           collectionRow: CollectionRow,
+          tweet: Tweet,
           modal: Modal,
-          tweet: Tweet
+          pdf: Pdf,
+          equation: Equation
         }}
         recordMap={recordMap}
         rootPageId={site.rootNotionPageId}
         fullPage={!isLiteMode}
-        darkMode={isDarkMode}
+        darkMode={darkMode}
         previewImages={site.previewImages !== false}
         showCollectionViewDropdown={false}
-        showTableOfContents={true}
+        showTableOfContents={showTableOfContents}
         minTableOfContentsItems={minTableOfContentsItems}
         defaultPageIcon={config.defaultPageIcon}
         defaultPageCover={config.defaultPageCover}
@@ -223,7 +265,9 @@ export const NotionPage: React.FC<types.PageProps> = ({
         footer={<Footer pageId={pageId} />}
       />
 
+      <GitHubShareButton />
+
       <CustomHtml site={site} />
-    </IconContext.Provider>
+    </Twitter.Provider>
   )
 }

@@ -5,10 +5,36 @@
  * for optional depenencies.
  */
 
+import { parsePageId } from 'notion-utils'
 import { getSiteConfig, getEnv } from './get-config-value'
+import { PageUrlOverridesMap, PageUrlOverridesInverseMap } from './types'
 
-// where it all starts -- the site's root Notion page
-export const rootNotionPageId: string = getSiteConfig('rootNotionPageId')
+export const rootNotionPageId: string = parsePageId(
+  getSiteConfig('rootNotionPageId'),
+  { uuid: false }
+)
+
+if (!rootNotionPageId) {
+  throw new Error('Config error invalid "rootNotionPageId"')
+}
+
+// if you want to restrict pages to a single notion workspace (optional)
+export const rootNotionSpaceId: string | null = parsePageId(
+  getSiteConfig('rootNotionSpaceId', null),
+  { uuid: true }
+)
+
+export const pageUrlOverrides = cleanPageUrlMap(
+  getSiteConfig('pageUrlOverrides', {}) || {},
+  'pageUrlOverrides'
+)
+
+export const inversePageUrlOverrides = invertPageUrlOverrides(pageUrlOverrides)
+
+export const pageUrlAdditions = cleanPageUrlMap(
+  getSiteConfig('pageUrlAdditions', {}) || {},
+  'pageUrlAdditions'
+)
 
 // general site config
 export const name: string = getSiteConfig('name')
@@ -64,10 +90,16 @@ export const isPreviewImageSupportEnabled: boolean = getSiteConfig(
   false
 )
 
-// ----------------------------------------------------------------------------
-
 export const isDev =
   process.env.NODE_ENV === 'development' || !process.env.NODE_ENV
+
+// where it all starts -- the site's root Notion page
+export const includeNotionIdInUrls: boolean = getSiteConfig(
+  'includeNotionIdInUrls',
+  !!isDev
+)
+
+// ----------------------------------------------------------------------------
 
 export const isServer = typeof window === 'undefined'
 
@@ -84,24 +116,21 @@ export const api = {
 
 // ----------------------------------------------------------------------------
 
+export const fathomId = isDev ? null : process.env.NEXT_PUBLIC_FATHOM_ID
+
+export const fathomConfig = fathomId
+  ? {
+      excludedDomains: ['localhost', 'localhost:3000']
+    }
+  : undefined
+
 const defaultEnvValueForPreviewImageSupport =
   isPreviewImageSupportEnabled && isServer ? undefined : null
 
 export const googleProjectId = getEnv(
-  'FIREBASE_PROJECT_ID',
+  'GCLOUD_PROJECT',
   defaultEnvValueForPreviewImageSupport
 )
-
-const config = {
-  client_email: getEnv(
-    'FIREBASE_CLIENT_EMAIL',
-    defaultEnvValueForPreviewImageSupport
-  ),
-  private_key: getEnv(
-    'FIREBASE_PRIVATE_KEY',
-    defaultEnvValueForPreviewImageSupport
-  )?.replace(/\\n/g, '\n')
-}
 
 export const googleApplicationCredentials = getGoogleApplicationCredentials()
 
@@ -117,5 +146,64 @@ function getGoogleApplicationCredentials() {
     return null
   }
 
-  return config
+  try {
+    const googleApplicationCredentialsBase64 = getEnv(
+      'GOOGLE_APPLICATION_CREDENTIALS',
+      defaultEnvValueForPreviewImageSupport
+    )
+
+    return JSON.parse(
+      Buffer.from(googleApplicationCredentialsBase64, 'base64').toString()
+    )
+  } catch (err) {
+    console.error(
+      'Firebase config error: invalid "GOOGLE_APPLICATION_CREDENTIALS" should be base64-encoded JSON\n'
+    )
+
+    throw err
+  }
+}
+
+function cleanPageUrlMap(
+  pageUrlMap: PageUrlOverridesMap,
+  label: string
+): PageUrlOverridesMap {
+  return Object.keys(pageUrlMap).reduce((acc, uri) => {
+    const pageId = pageUrlMap[uri]
+    const uuid = parsePageId(pageId, { uuid: false })
+
+    if (!uuid) {
+      throw new Error(`Invalid ${label} page id "${pageId}"`)
+    }
+
+    if (!uri) {
+      throw new Error(`Missing ${label} value for page "${pageId}"`)
+    }
+
+    if (!uri.startsWith('/')) {
+      throw new Error(
+        `Invalid ${label} value for page "${pageId}": value "${uri}" should be a relative URI that starts with "/"`
+      )
+    }
+
+    const path = uri.slice(1)
+
+    return {
+      ...acc,
+      [path]: uuid
+    }
+  }, {})
+}
+
+function invertPageUrlOverrides(
+  pageUrlOverrides: PageUrlOverridesMap
+): PageUrlOverridesInverseMap {
+  return Object.keys(pageUrlOverrides).reduce((acc, uri) => {
+    const pageId = pageUrlOverrides[uri]
+
+    return {
+      ...acc,
+      [pageId]: uri
+    }
+  }, {})
 }

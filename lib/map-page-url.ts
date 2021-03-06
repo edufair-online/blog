@@ -1,16 +1,19 @@
-import * as types from './types'
-import { isDev } from './config'
-import { getCanonicalPageId, uuidToId, parsePageId } from 'notion-utils'
+import { ExtendedRecordMap } from 'notion-types'
+import { uuidToId, parsePageId } from 'notion-utils'
+
+import { Site } from './types'
+import { includeNotionIdInUrls } from './config'
+import { getCanonicalPageId } from './get-canonical-page-id'
 
 // include UUIDs in page URLs during local development but not in production
 // (they're nice for debugging and speed up local dev)
-const uuid = !!isDev
+const uuid = !!includeNotionIdInUrls
 
 export const mapPageUrl = (
-  site: types.Site,
-  recordMap: types.ExtendedRecordMap,
+  site: Site,
+  recordMap: ExtendedRecordMap,
   searchParams: URLSearchParams
-) => (pageId: string = '') => {
+) => (pageId = '') => {
   if (uuidToId(pageId) === site.rootNotionPageId) {
     return createUrl('/', searchParams)
   } else {
@@ -22,9 +25,9 @@ export const mapPageUrl = (
 }
 
 export const getCanonicalPageUrl = (
-  site: types.Site,
-  recordMap: types.ExtendedRecordMap
-) => (pageId: string = '') => {
+  site: Site,
+  recordMap: ExtendedRecordMap
+) => (pageId = '') => {
   const pageUuid = parsePageId(pageId, { uuid: true })
 
   if (uuidToId(pageId) === site.rootNotionPageId) {
